@@ -85,7 +85,7 @@ if dropbox == APPS[0]:
                 'asset_value': usd_asset * fx_usdkrw, 
             }
             ])
-        fig_before = px.pie(before_df,)
+        fig_before = px.pie(before_df, values='asset_value', names='asset_type')
         st.plotly_chart(fig_before, use_container_width=False)
 
     elif currency == '달러':
@@ -104,7 +104,7 @@ if dropbox == APPS[0]:
                 'asset_value': usd_asset, 
             }
             ])
-        fig_before = px.pie(before_df, )
+        fig_before = px.pie(before_df, values='asset_value', names='asset_type')
         st.plotly_chart(fig_before, use_container_width=False)
 
 
@@ -129,7 +129,7 @@ if dropbox == APPS[0]:
                 'asset_value': usd_asset * fx_usdkrw_changed, 
             }
             ])
-        fig_after = px.pie(after_df,)
+        fig_after = px.pie(after_df, values='asset_value', names='asset_type')
         st.plotly_chart(fig_after, use_container_width=False)
 
     elif currency == '달러':
@@ -147,6 +147,6 @@ if dropbox == APPS[0]:
                 'asset_value': usd_asset, 
             }
             ])
-        fig_after = px.pie(after_df, )
+        fig_after = px.pie(after_df, values='asset_value', names='asset_type')
         st.plotly_chart(fig_after, use_container_width=False)
     
