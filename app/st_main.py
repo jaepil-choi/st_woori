@@ -59,11 +59,11 @@ if dropbox == APPS[0]:
     st.write(f'현재 애플 가격: {apple_price} 달러')
     apple_vol = float(st.text_input('애플 몇 주?', 1))
     
-    krw_asset = samsung_vol * samsung_price
-    usd_asset = apple_vol * apple_price
+    krw_asset = round(samsung_vol * samsung_price, 2)
+    usd_asset = round(apple_vol * apple_price, 2)
     
-    krw_total = krw_asset + usd_asset * fx_usdkrw
-    usd_total = krw_asset / fx_usdkrw + usd_asset
+    krw_total = round(krw_asset + usd_asset * fx_usdkrw, 2)
+    usd_total = round(krw_asset / fx_usdkrw + usd_asset, 2)
     st.write(f'''
     현재 고객이 보유한 원화자산총합: {krw_asset} 원
     현재 고객이 보유한 외화자산총합: {usd_asset} 달러
@@ -75,8 +75,8 @@ if dropbox == APPS[0]:
     fx_change_krw = float(st.text_input('원달러 환율 변동값 (기본 50원)', 50))
     fx_usdkrw_changed = fx_usdkrw + fx_change_krw
     
-    krw_total_after = krw_asset + usd_asset * fx_usdkrw_changed
-    usd_total_after = krw_asset / fx_usdkrw_changed + usd_asset
+    krw_total_after = round(krw_asset + usd_asset * fx_usdkrw_changed, 2)
+    usd_total_after = round(krw_asset / fx_usdkrw_changed + usd_asset, 2)
     st.write(f'''
     원달러 환율이 {fx_change_krw}원 변한다면 고객님 자산은 이런 영향을 받아요.
 
