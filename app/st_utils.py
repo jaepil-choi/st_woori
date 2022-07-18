@@ -41,7 +41,7 @@ class QS2ST:
 
         return stats_method(self.returns)
 
-@st.cache
+# @st.cache
 def get_fdr_data(sid: str, start: int, end: int):
     if isinstance(start, int) or isinstance(end, int):
         start = utils.DateUtil.numdate2stddate(start)
