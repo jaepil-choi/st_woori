@@ -80,7 +80,6 @@ if dropbox == APPS[0]:
         fig_before = px.pie(before_df, values=['가치(원)', '가치(원)'], names=['원화자산(삼성)', '외화자산(애플)'])
         st.plotly_chart(fig_before, use_container_width=True)
 
-
     elif currency == '달러':
         st.write(f'''
         현재 고객이 보유한 원화자산총합: {krw_asset} 원
@@ -92,7 +91,7 @@ if dropbox == APPS[0]:
             '원화자산(삼성)': krw_asset / fx_usdkrw, 
             '외화자산(애플)': usd_asset
             }])
-        fig_before = px.pie(before_df, values=['가치(달러)', '가치(달러)'], names=['원화자산(삼성)', '외화자산(애플)'])
+        fig_before = px.pie(before_df, )
         st.plotly_chart(fig_before, use_container_width=True)
 
 
@@ -114,6 +113,7 @@ if dropbox == APPS[0]:
             }])
         fig_after = px.pie(after_df, values=['가치(원)', '가치(원)'], names=['원화자산(삼성)', '외화자산(애플)'])
         st.plotly_chart(fig_after, use_container_width=True)
+
     elif currency == '달러':
         st.write(f'''
         원달러 환율이 {fx_change_krw}원 변한다면 고객님 자산은 이런 영향을 받아요.
@@ -124,6 +124,6 @@ if dropbox == APPS[0]:
             '원화자산(삼성)': krw_asset / fx_usdkrw_changed, 
             '외화자산(애플)': usd_asset
             }])
-        fig_after = px.pie(after_df, values=['가치(달러)', '가치(달러)'], names=['원화자산(삼성)', '외화자산(애플)'])
+        fig_after = px.pie(after_df, )
         st.plotly_chart(fig_after, use_container_width=True)
     
