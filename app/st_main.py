@@ -83,7 +83,7 @@ if dropbox == APPS[0]:
             }
             ])
         fig_before = px.pie(before_df,)
-        st.plotly_chart(fig_before, use_container_width=True)
+        st.plotly_chart(fig_before, use_container_width=False)
 
     elif currency == '달러':
         st.write(f'''
@@ -102,7 +102,7 @@ if dropbox == APPS[0]:
             }
             ])
         fig_before = px.pie(before_df, )
-        st.plotly_chart(fig_before, use_container_width=True)
+        st.plotly_chart(fig_before, use_container_width=False)
 
 
     fx_change_krw = float(st.text_input('원달러 환율 변동값 (기본 50원)', 50))
@@ -127,7 +127,7 @@ if dropbox == APPS[0]:
             }
             ])
         fig_after = px.pie(after_df,)
-        st.plotly_chart(fig_after, use_container_width=True)
+        st.plotly_chart(fig_after, use_container_width=False)
 
     elif currency == '달러':
         st.write(f'''
@@ -145,5 +145,5 @@ if dropbox == APPS[0]:
             }
             ])
         fig_after = px.pie(after_df, )
-        st.plotly_chart(fig_after, use_container_width=True)
+        st.plotly_chart(fig_after, use_container_width=False)
     
