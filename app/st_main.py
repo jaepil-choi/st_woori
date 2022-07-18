@@ -80,7 +80,7 @@ if dropbox == APPS[0]:
     st.write(f'''
     원달러 환율이 {fx_change_krw}원 변한다면 고객님 자산은 이런 영향을 받아요.
 
-    총 자산 (원화기준): {krw_total_after - krw_total} 원, {(krw_total_after - krw_total) / krw_total} % 변동
-    총 자산 (달러기준): {usd_total_after - usd_total} 달러, {(usd_total_after - usd_total) / usd_total} % 변동
+    총 자산 (원화기준): {round(krw_total_after - krw_total, 2)} 원, {round((krw_total_after - krw_total) / krw_total, 2)} % 변동
+    총 자산 (달러기준): {round(usd_total_after - usd_total, 2)} 달러, {round((usd_total_after - usd_total) / usd_total, 2)} % 변동
     ''')
     
