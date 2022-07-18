@@ -1,16 +1,15 @@
 import streamlit as st
-
-import pandas as pd
-import numpy as np
-
+import plotly.express as px
 import matplotlib.pyplot as plt
 import seaborn as sns
 
+import pandas as pd
+import numpy as np
 import datetime
-from app.utils import DateUtil
 
 ## custom libs
 import st_utils, utils
+from app.utils import DateUtil
 
 plt.rc('font', family='Malgun Gothic')
 
@@ -50,37 +49,81 @@ if dropbox == APPS[0]:
     samsung_price = utils.get_fdr_last(samsung_price)
     st.write('원화자산을 입력해보세요 (입력 후 엔터)')
     st.write(f'현재 삼성전자 가격: {samsung_price} 원')
-    samsung_vol = float(st.text_input('삼성전자 몇 주?', 1))
+    samsung_vol = float(st.text_input('삼성전자 몇 주?', 1000))
     
 
     apple_price = st_utils.get_fdr_data('AAPL', start=today_str, end=today_str)
     apple_price = utils.get_fdr_last(apple_price)
     st.write('외화자산을 입력해보세요 (입력 후 엔터)')
     st.write(f'현재 애플 가격: {apple_price} 달러')
-    apple_vol = float(st.text_input('애플 몇 주?', 1))
+    apple_vol = float(st.text_input('애플 몇 주?', 1000))
+
+    currency = st.radio('기준 통화를 선택해주세요', ['원', '달러'])
     
     krw_asset = round(samsung_vol * samsung_price, 2)
     usd_asset = round(apple_vol * apple_price, 2)
     
     krw_total = round(krw_asset + usd_asset * fx_usdkrw, 2)
     usd_total = round(krw_asset / fx_usdkrw + usd_asset, 2)
-    st.write(f'''
-    현재 고객이 보유한 원화자산총합: {krw_asset} 원
-    현재 고객이 보유한 외화자산총합: {usd_asset} 달러
+    
+    if currency == '원':
+        st.write(f'''
+        현재 고객이 보유한 원화자산총합: {krw_asset} 원
+        현재 고객이 보유한 외화자산총합: {usd_asset} 달러
 
-    총 자산 (원화기준): {krw_total} 원
-    총 자산 (달러기준): {usd_total} 달러
-    ''')
+        총 자산 (원화기준): {krw_total} 원
+        ''')
+        before_df = pd.DataFrame([{
+            '원화자산(삼성)': krw_asset, 
+            '외화자산(애플)': usd_asset * fx_usdkrw
+            }])
+        fig_before = px.pie(before_df, values='가치(원)', names='종류')
+        st.plotly_chart(fig_before, use_container_width=True)
+
+
+    elif currency == '달러':
+        st.write(f'''
+        현재 고객이 보유한 원화자산총합: {krw_asset} 원
+        현재 고객이 보유한 외화자산총합: {usd_asset} 달러
+
+        총 자산 (달러기준): {usd_total} 달러
+        ''')
+        before_df = pd.DataFrame([{
+            '원화자산(삼성)': krw_asset / fx_usdkrw, 
+            '외화자산(애플)': usd_asset
+            }])
+        fig_before = px.pie(before_df, values='가치(달러)', names='종류')
+        st.plotly_chart(fig_before, use_container_width=True)
+
 
     fx_change_krw = float(st.text_input('원달러 환율 변동값 (기본 50원)', 50))
     fx_usdkrw_changed = fx_usdkrw + fx_change_krw
     
     krw_total_after = round(krw_asset + usd_asset * fx_usdkrw_changed, 2)
     usd_total_after = round(krw_asset / fx_usdkrw_changed + usd_asset, 2)
-    st.write(f'''
-    원달러 환율이 {fx_change_krw}원 변한다면 고객님 자산은 이런 영향을 받아요.
+    
+    if currency == '원':
+        st.write(f'''
+        원달러 환율이 {fx_change_krw}원 변한다면 고객님 자산은 이런 영향을 받아요.
 
-    총 자산 (원화기준): {round(krw_total_after - krw_total, 2)} 원, {round((krw_total_after - krw_total) / krw_total, 2)} % 변동
-    총 자산 (달러기준): {round(usd_total_after - usd_total, 2)} 달러, {round((usd_total_after - usd_total) / usd_total, 2)} % 변동
-    ''')
+        총 자산 (원화기준): {round(krw_total_after - krw_total, 2)} 원, {round((krw_total_after - krw_total) / krw_total, 2)} % 변동
+        ''')
+        after_df = pd.DataFrame([{
+            '원화자산(삼성)': krw_asset, 
+            '외화자산(애플)': usd_asset * fx_usdkrw_changed
+            }])
+        fig_after = px.pie(after_df, values='가치(원)', names='종류')
+        st.plotly_chart(fig_after, use_container_width=True)
+    elif currency == '달러':
+        st.write(f'''
+        원달러 환율이 {fx_change_krw}원 변한다면 고객님 자산은 이런 영향을 받아요.
+
+        총 자산 (달러기준): {round(usd_total_after - usd_total, 2)} 달러, {round((usd_total_after - usd_total) / usd_total, 2)} % 변동
+        ''')
+        after_df = pd.DataFrame([{
+            '원화자산(삼성)': krw_asset / fx_usdkrw_changed, 
+            '외화자산(애플)': usd_asset
+            }])
+        fig_after = px.pie(after_df, values='가치(달러)', names='종류')
+        st.plotly_chart(fig_after, use_container_width=True)
     
