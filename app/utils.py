@@ -7,7 +7,7 @@ from conf import PathConfig
 with open(PathConfig.DATA_PATH / 'sid2name.pkl', 'rb') as p:
     SID2NAME = pickle.load(p)
 
-def get_FDR_last(df, col='Close'):
+def get_fdr_last(df, col='Close'):
     assert col in ['Close', 'Open', 'High', 'Low', 'Change']
     
     row = df.iloc[-1]
