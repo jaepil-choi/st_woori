@@ -73,11 +73,16 @@ if dropbox == APPS[0]:
 
         총 자산 (원화기준): {krw_total} 원
         ''')
-        before_df = pd.DataFrame([{
-            '원화자산(삼성)': krw_asset, 
-            '외화자산(애플)': usd_asset * fx_usdkrw
-            }])
-        fig_before = px.pie(before_df, values=['가치(원)', '가치(원)'], names=['원화자산(삼성)', '외화자산(애플)'])
+        before_df = pd.DataFrame([
+            {
+                'asset_type': '원화자산(삼성)',
+                'asset_value': krw_asset, 
+            }, {
+                'asset_type': '외화자산(애플)',
+                'asset_value': usd_asset * fx_usdkrw, 
+            }
+            ])
+        fig_before = px.pie(before_df,)
         st.plotly_chart(fig_before, use_container_width=True)
 
     elif currency == '달러':
@@ -87,10 +92,15 @@ if dropbox == APPS[0]:
 
         총 자산 (달러기준): {usd_total} 달러
         ''')
-        before_df = pd.DataFrame([{
-            '원화자산(삼성)': krw_asset / fx_usdkrw, 
-            '외화자산(애플)': usd_asset
-            }])
+        before_df = pd.DataFrame([
+            {
+                'asset_type': '원화자산(삼성)',
+                'asset_value': krw_asset / fx_usdkrw, 
+            }, {
+                'asset_type': '외화자산(애플)',
+                'asset_value': usd_asset, 
+            }
+            ])
         fig_before = px.pie(before_df, )
         st.plotly_chart(fig_before, use_container_width=True)
 
@@ -107,11 +117,16 @@ if dropbox == APPS[0]:
 
         총 자산 (원화기준): {round(krw_total_after - krw_total, 2)} 원, {round((krw_total_after - krw_total) / krw_total, 2)} % 변동
         ''')
-        after_df = pd.DataFrame([{
-            '원화자산(삼성)': krw_asset, 
-            '외화자산(애플)': usd_asset * fx_usdkrw_changed
-            }])
-        fig_after = px.pie(after_df, values=['가치(원)', '가치(원)'], names=['원화자산(삼성)', '외화자산(애플)'])
+        after_df = pd.DataFrame([
+            {
+                'asset_type': '원화자산(삼성)',
+                'asset_value': krw_asset, 
+            }, {
+                'asset_type': '외화자산(애플)',
+                'asset_value': usd_asset * fx_usdkrw_changed, 
+            }
+            ])
+        fig_after = px.pie(after_df,)
         st.plotly_chart(fig_after, use_container_width=True)
 
     elif currency == '달러':
@@ -120,10 +135,15 @@ if dropbox == APPS[0]:
 
         총 자산 (달러기준): {round(usd_total_after - usd_total, 2)} 달러, {round((usd_total_after - usd_total) / usd_total, 2)} % 변동
         ''')
-        after_df = pd.DataFrame([{
-            '원화자산(삼성)': krw_asset / fx_usdkrw_changed, 
-            '외화자산(애플)': usd_asset
-            }])
+        after_df = pd.DataFrame([
+            {
+                'asset_type': '원화자산(삼성)',
+                'asset_value': krw_asset / fx_usdkrw_changed, 
+            }, {
+                'asset_type': '외화자산(애플)',
+                'asset_value': usd_asset, 
+            }
+            ])
         fig_after = px.pie(after_df, )
         st.plotly_chart(fig_after, use_container_width=True)
     
