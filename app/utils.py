@@ -4,7 +4,7 @@ import pickle
 ## Custom libs
 from conf import PathConfig
 
-with open(PathConfig.DATA_PATH / 'sid2name.pkl') as p:
+with open(PathConfig.DATA_PATH / 'sid2name.pkl', 'rb') as p:
     SID2NAME = pickle.load(p)
 
 def get_FDR_last(df, col='Close'):
