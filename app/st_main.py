@@ -45,13 +45,16 @@ if dropbox == APPS[0]:
 
     st.subheader(f':dollar: 오늘의 환율: {fx_usdkrw} 원/달러')
 
+    samsung_logo = 'https://w7.pngwing.com/pngs/176/171/png-transparent-samsung-galaxy-gurugram-faridabad-logo-samsung-blue-text-logo.png'
+    st.image(samsung_logo, width=3)
     samsung_price = st_utils.get_fdr_data('005930', start=today_str, end=today_str)
     samsung_price = utils.get_fdr_last(samsung_price)
     st.write('원화자산을 입력해보세요 (입력 후 엔터)')
     st.write(f'현재 삼성전자 가격: {samsung_price} 원')
     samsung_vol = float(st.text_input('삼성전자 몇 주?', 1000))
     
-
+    apple_logo = 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Apple_logo_black.svg/1667px-Apple_logo_black.svg.png'
+    st.image(apple_logo, width=3)
     apple_price = st_utils.get_fdr_data('AAPL', start=today_str, end=today_str)
     apple_price = utils.get_fdr_last(apple_price)
     st.write('외화자산을 입력해보세요 (입력 후 엔터)')
