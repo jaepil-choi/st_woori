@@ -54,7 +54,7 @@ if dropbox == APPS[0]:
     samsung_price = st_utils.get_fdr_data('005930', start=offset_day_str, end=today_str)
     samsung_price = utils.get_fdr_last(samsung_price)
     st.write('원화자산을 입력해보세요 (입력 후 엔터)')
-    st.write(f'현재 삼성전자 가격: {samsung_price} 원')
+    st.subheader(f'현재 삼성전자 가격: {samsung_price} 원')
     samsung_vol = float(st.text_input('삼성전자 몇 주?', 1000))
     
     apple_logo = 'http://alsanad.ae/wp-content/uploads/2016/10/apple-logo.png'
@@ -62,7 +62,7 @@ if dropbox == APPS[0]:
     apple_price = st_utils.get_fdr_data('AAPL', start=offset_day_str, end=today_str)
     apple_price = utils.get_fdr_last(apple_price)
     st.write('외화자산을 입력해보세요 (입력 후 엔터)')
-    st.write(f'현재 애플 가격: {apple_price} 달러')
+    st.subheader(f'현재 애플 가격: {apple_price} 달러')
     apple_vol = float(st.text_input('애플 몇 주?', 1000))
 
     currency = st.radio('기준 통화를 선택해주세요', ['원', '달러'])
@@ -74,12 +74,15 @@ if dropbox == APPS[0]:
     usd_total = round(krw_asset / fx_usdkrw + usd_asset, 2)
     
     if currency == '원':
-        st.write(f'''
-        현재 고객이 보유한 원화자산총합: {krw_asset} 원
-        현재 고객이 보유한 외화자산총합: {usd_asset} 달러
+        st.write(f'현재 고객이 보유한 원화자산총합:')
+        st.subheader(f'{krw_asset} 원')
 
-        총 자산 (원화기준): {krw_total} 원
-        ''')
+        st.write('현재 고객이 보유한 외화자산총합:') 
+        st.subheader(f'{usd_asset} 달러')
+
+        st.write('총 자산 (원화기준):') 
+        st.subheader(f'{krw_total} 원')
+
         before_df = pd.DataFrame([
             {
                 'asset_type': '원화자산(삼성)',
@@ -93,12 +96,15 @@ if dropbox == APPS[0]:
         st.plotly_chart(fig_before, use_container_width=False)
 
     elif currency == '달러':
-        st.write(f'''
-        현재 고객이 보유한 원화자산총합: {krw_asset} 원
-        현재 고객이 보유한 외화자산총합: {usd_asset} 달러
+        st.write(f'현재 고객이 보유한 원화자산총합:')
+        st.subheader(f'{krw_asset} 원')
 
-        총 자산 (달러기준): {usd_total} 달러
-        ''')
+        st.write('현재 고객이 보유한 외화자산총합:') 
+        st.subheader(f'{usd_asset} 달러')
+
+        st.write('총 자산 (원화기준):') 
+        st.subheader(f'{usd_total} 달러')
+
         before_df = pd.DataFrame([
             {
                 'asset_type': '원화자산(삼성)',
@@ -122,8 +128,10 @@ if dropbox == APPS[0]:
         st.write(f'''
         원달러 환율이 {fx_change_krw}원 변한다면 고객님 자산은 이런 영향을 받아요.
 
-        총 자산 (원화기준): {round(krw_total_after - krw_total, 2)} 원, {round(100 * (krw_total_after - krw_total) / krw_total, 2)} % 변동
+        총 자산 (원화기준):
         ''')
+        st.subheader(f'{round(krw_total_after - krw_total, 2)} 원, {round(100 * (krw_total_after - krw_total) / krw_total, 2)} % 변동')
+
         after_df = pd.DataFrame([
             {
                 'asset_type': '원화자산(삼성)',
@@ -140,8 +148,10 @@ if dropbox == APPS[0]:
         st.write(f'''
         원달러 환율이 {fx_change_krw}원 변한다면 고객님 자산은 이런 영향을 받아요.
 
-        총 자산 (달러기준): {round(usd_total_after - usd_total, 2)} 달러, {round(100 * (usd_total_after - usd_total) / usd_total, 2)} % 변동
+        총 자산 (달러기준):
         ''')
+        st.subheader(f'{round(usd_total_after - usd_total, 2)} 달러, {round(100 * (usd_total_after - usd_total) / usd_total, 2)} % 변동')
+
         after_df = pd.DataFrame([
             {
                 'asset_type': '원화자산(삼성)',
