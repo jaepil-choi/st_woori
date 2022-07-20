@@ -2,7 +2,7 @@ from pathlib import Path
 
 MIN_DATE = 20170101
 
-OFFSET_DAYS = 60
+OFFSET_DAYS = 5
 
 class PathConfig:
     PROJ_PATH = Path(__file__).resolve().parent.parent
