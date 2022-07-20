@@ -8,7 +8,7 @@ import numpy as np
 import datetime
 
 ## custom libs
-import st_utils, utils
+import st_utils, utils, conf
 from app.utils import DateUtil
 
 plt.rc('font', family='Malgun Gothic')
@@ -31,6 +31,10 @@ today = datetime.date.today()
 today_int = DateUtil.timestamp_2_intDate(today)
 today_str = DateUtil.numdate2stddate(today_int)
 
+offset_day = today - datetime.timedelta(days=conf.OFFSET_DAYS)
+offset_day_int = DateUtil.timestamp_2_intDate(offset_day)
+offset_day_str = DateUtil.numdate2stddate(offset_day_int)
+
 if dropbox == APPS[0]:
     st.header(APPS[0])
     st.info('''
@@ -40,14 +44,14 @@ if dropbox == APPS[0]:
     - 이를 통해 고객이 환율변동에 너무 큰 영향을 받지 않게 원화자산/외화자산 비중을 적절히 조절하도록 유도합니다.
     ''')
     
-    fx_usdkrw = st_utils.get_fdr_data('USD/KRW', start=today_str, end=today_str)
+    fx_usdkrw = st_utils.get_fdr_data('USD/KRW', start=offset_day_str, end=today_str)
     fx_usdkrw = utils.get_fdr_last(fx_usdkrw)
 
     st.subheader(f':dollar: 오늘의 환율: {fx_usdkrw} 원/달러')
 
     samsung_logo = 'https://cdn.iconscout.com/icon/free/png-256/samsung-226432.png'
     st.image(samsung_logo, width=100)
-    samsung_price = st_utils.get_fdr_data('005930', start=today_str, end=today_str)
+    samsung_price = st_utils.get_fdr_data('005930', start=offset_day_str, end=today_str)
     samsung_price = utils.get_fdr_last(samsung_price)
     st.write('원화자산을 입력해보세요 (입력 후 엔터)')
     st.write(f'현재 삼성전자 가격: {samsung_price} 원')
@@ -55,7 +59,7 @@ if dropbox == APPS[0]:
     
     apple_logo = 'http://alsanad.ae/wp-content/uploads/2016/10/apple-logo.png'
     st.image(apple_logo, width=100)
-    apple_price = st_utils.get_fdr_data('AAPL', start=today_str, end=today_str)
+    apple_price = st_utils.get_fdr_data('AAPL', start=offset_day_str, end=today_str)
     apple_price = utils.get_fdr_last(apple_price)
     st.write('외화자산을 입력해보세요 (입력 후 엔터)')
     st.write(f'현재 애플 가격: {apple_price} 달러')
