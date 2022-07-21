@@ -11,6 +11,7 @@ from conf import PathConfig
 
 with open(PathConfig.DATA_PATH / 'sid2name.pkl', 'rb') as p:
     SID2NAME = pickle.load(p)
+NAME2SID = {v:k for k, v in SID2NAME.items()}
 
 def get_fdr_last(df, col='Close'):
     assert col in ['Close', 'Open', 'High', 'Low', 'Change']
@@ -29,7 +30,18 @@ def sid2name(sid, none_if_not_found=True):
             return None
         else:
             raise e
-
+    
+def name2sid(sidname, none_if_not_found=True):
+    assert isinstance(sidname, str)
+    
+    try:
+        return NAME2SID[sidname]
+    except KeyError as e:
+        if none_if_not_found:
+            return None
+        else:
+            raise e
+    
 class DateUtil:
     @staticmethod
     def validate_date(yyyymmdd: Union[str, int], min_date=19900101, max_date=21000101) -> bool:
