@@ -2,7 +2,7 @@
 
 ## Webpage
 
-- foo link
+- https://jaepil-choi-st-woori-appst-main-au316c.streamlitapp.com/
 
 ## Project Description
 
@@ -14,4 +14,4 @@ This is a github repo for `streamlit`-based web dashboard to show POC of MyData 
 
 ## Project Notes
 
-- foo link
+- Will later be added (Notion notes)
