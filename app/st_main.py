@@ -8,8 +8,11 @@ import numpy as np
 import datetime
 
 ## custom libs
-import st_utils, utils, conf
-from app.utils import DateUtil
+import st_utils, utils
+import conf
+from conf import PathConfig
+# import app.utils
+import utils
 
 plt.rc('font', family='Malgun Gothic')
 
@@ -17,7 +20,7 @@ st.title(':chart_with_upwards_trend: MyData 기획 POC 대시보드')
 st.markdown('---')
 
 APPS = [
-    '1. 환율 변동에 따른 원화자산/외화자산 균형',
+    '1. 환율 변동에 따른 내 원화자산/외화자산 가치변화',
     '2. 환율 변동에 따른 외화자산 직접투자 환차익/환손실 계산',
     '3. 주식 종목 간 상관관계에 기반한 유사종목 추천',
     '4. 기 보유한 펀드 포트폴리오와 상관관계 낮은 펀드 추천',
@@ -28,12 +31,12 @@ with st.sidebar:
     dropbox = st.selectbox('Select app', APPS)
 
 today = datetime.date.today()
-today_int = DateUtil.timestamp_2_intDate(today)
-today_str = DateUtil.numdate2stddate(today_int)
+today_int = utils.DateUtil.timestamp_2_intDate(today)
+today_str = utils.DateUtil.numdate2stddate(today_int)
 
 offset_day = today - datetime.timedelta(days=conf.OFFSET_DAYS)
-offset_day_int = DateUtil.timestamp_2_intDate(offset_day)
-offset_day_str = DateUtil.numdate2stddate(offset_day_int)
+offset_day_int = utils.DateUtil.timestamp_2_intDate(offset_day)
+offset_day_str = utils.DateUtil.numdate2stddate(offset_day_int)
 
 if dropbox == APPS[0]:
     st.header(APPS[0])
