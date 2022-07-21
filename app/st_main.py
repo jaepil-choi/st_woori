@@ -34,6 +34,13 @@ with st.sidebar:
     st.write('제 깃허브 레포')
     st.markdown('[![Repo](https://badgen.net/badge/icon/GitHub?icon=github&label)](https://github.com/jaepil-choi)')
 
+    st.markdown(f'''
+    ### 현재 POC가 완성된 항목들:
+
+    - {APPS[0]}
+    - {APPS[2]}
+    ''')
+
 today = datetime.date.today()
 today_int = utils.DateUtil.timestamp_2_intDate(today)
 today_str = utils.DateUtil.numdate2stddate(today_int)
