@@ -171,3 +171,83 @@ if dropbox == APPS[0]:
         fig_after = px.pie(after_df, values='asset_value', names='asset_type')
         st.plotly_chart(fig_after, use_container_width=False)
     
+if dropbox == APPS[1]:
+    pass
+if dropbox == APPS[2]:
+    st.header(APPS[2])
+    st.info('''
+    - 고객이 가진 주식종목과 가장 유사한 수익률을 보였던 종목을 순서대로 보여줍니다. 
+
+    ''')
+
+    LOOKBACK_PERIOD = 252 # Trading days of 1 year / Fixed value for now. (As of 20220520)
+    TOP_N = 10
+
+    # 지난 1년 (252일) 간 가격데이터가 모두 존재했던 종목만 남김
+    # 즉, 1년 중 상폐 / 신규상장 되었던 기업들 모두 빠짐
+    return_df = pd.read_pickle(PathConfig.DATA_PATH / 'recent252_return_df.pkl')
+    return_corr_df = pd.read_pickle(PathConfig.DATA_PATH / 'return_corr_df.pkl')
+    corr_rank_df = return_corr_df.rank(ascending=False)
+    
+    sid_list = return_corr_df.columns
+    sidname_list = [utils.sid2name(sid) for sid in sid_list]
+    sidname_list = [sidname for sidname in sidname_list if sidname is not None]
+    sidname_list = sorted(sidname_list)
+
+    selected = st.selectbox('보유한 종목을 고르세요', sidname_list)
+    selected_sid = utils.name2sid(selected)
+
+    st.subheader('내가 보유한 주식의 지난 1년간의 누적수익률')
+
+    selected_return_df = return_df.loc[:, selected_sid].copy()
+    selected_cumret_df = (selected_return_df + 1).cumprod() - 1
+    selected_cumret_df = selected_cumret_df * 100
+
+    selected_fig = px.line(selected_cumret_df)   
+    selected_fig.update_layout(
+        title=f'{selected}의 {LOOKBACK_PERIOD} 거래일 전부터 지금까지의 누적수익률',
+        xaxis_title='날짜',
+        yaxis_title='누적수익률',
+        legend_title='종목코드(클릭가능)',
+    )
+    st.plotly_chart(selected_fig)
+
+    selected_corr_rank = corr_rank_df.loc[:, selected_sid]
+    top_N_sid_list = selected_corr_rank.sort_values().index[1:TOP_N+1]
+    top_N_sidname_list = [utils.sid2name(sid) for sid in top_N_sid_list]
+
+    st.subheader('보유 종목과 가장 유사한 종목들이에요')
+    top_N_df = pd.DataFrame(data=zip(top_N_sid_list, top_N_sidname_list), columns=['종목코드', '종목명'])
+    st.write(top_N_df)
+
+    similar = st.selectbox('비교할 종목을 고르세요', top_N_sidname_list)
+    similar_sid = utils.name2sid(similar)
+
+    similar_return_df = return_df.loc[:, similar_sid].copy()
+    similar_cumret_df = (similar_return_df + 1).cumprod() - 1
+    similar_cumret_df = similar_cumret_df * 100
+    
+    concat_df = pd.concat(
+        objs=[
+            selected_cumret_df,
+            similar_cumret_df,
+        ],
+        axis=1,
+    )
+    concat_df.columns = [utils.sid2name(c) for c in concat_df.columns]
+
+    similar_fig = px.line(concat_df)   
+    similar_fig.update_layout(
+        title=f'{concat_df.columns[0]}와 {concat_df.columns[1]}의 {LOOKBACK_PERIOD} 거래일 전부터 지금까지의 누적수익률',
+        xaxis_title='날짜',
+        yaxis_title='누적수익률',
+        legend_title='종목명(클릭가능)',
+    )
+    st.plotly_chart(similar_fig)
+    
+if dropbox == APPS[3]:
+    pass
+# if dropbox == APPS[4]:
+#     pass
+# if dropbox == APPS[5]:
+#     pass
