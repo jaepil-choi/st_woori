@@ -29,6 +29,10 @@ APPS = [
 
 with st.sidebar:
     dropbox = st.selectbox('Select app', APPS)
+    st.write('해당 프로젝트 소스코드')
+    st.markdown('[Source Code](https://github.com/jaepil-choi/st_woori)')
+    st.write('제 깃허브 레포')
+    st.markdown('[![Repo](https://badgen.net/badge/icon/GitHub?icon=github&label)](https://github.com/jaepil-choi)')
 
 today = datetime.date.today()
 today_int = utils.DateUtil.timestamp_2_intDate(today)
@@ -177,7 +181,12 @@ if dropbox == APPS[2]:
     st.header(APPS[2])
     st.info('''
     - 고객이 가진 주식종목과 가장 유사한 수익률을 보였던 종목을 순서대로 보여줍니다. 
-
+    - 그리고 고객이 본인 보유종목과 유사종목 간 누적수익률 차이를 쉽게 볼 수 있게 해줍니다.
+    ''')
+    st.warning('''
+    - 수익률 자체는 너무 불규칙해 그래프로 그려도 아무 이득이 없으므로, 누적 수익률을 계산하여 보여줍니다.
+    - 누적수익률은 말 그대로 일정기간 전부터(여기선 252 거래일 전) 보유했을 때 각 기간까지의 수익률을 보여줍니다.
+    - 이 POC 데이터의 마지막 일자는 22/05/20기 때문에 최신 주가정보를 보여주진 않습니다.
     ''')
 
     LOOKBACK_PERIOD = 252 # Trading days of 1 year / Fixed value for now. (As of 20220520)
@@ -244,7 +253,7 @@ if dropbox == APPS[2]:
         legend_title='종목명(클릭가능)',
     )
     st.plotly_chart(similar_fig)
-    
+
 if dropbox == APPS[3]:
     pass
 # if dropbox == APPS[4]:
