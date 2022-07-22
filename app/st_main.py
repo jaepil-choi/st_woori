@@ -3,6 +3,8 @@ import plotly.express as px
 import matplotlib.pyplot as plt
 import seaborn as sns
 
+from PIL import Image
+
 import pandas as pd
 import numpy as np
 import datetime
@@ -16,6 +18,12 @@ import utils
 
 plt.rc('font', family='Malgun Gothic')
 
+QR_CODE = Image.open(PathConfig.ASSETS_PATH / 'img' / 'site_QRcode.jpg')
+MYDATA_LOGO = Image.open(PathConfig.ASSETS_PATH / 'img' / 'mydatalogo.jpg')
+WOORI_LOGO = Image.open(PathConfig.ASSETS_PATH / 'img' / 'wooribanklogo.jpg')
+
+# st.image(WOORI_LOGO, width=200)
+st.image(MYDATA_LOGO, width = 100)
 st.title(':chart_with_upwards_trend: MyData 기획 POC 대시보드')
 st.markdown('---')
 
@@ -29,10 +37,6 @@ APPS = [
 
 with st.sidebar:
     dropbox = st.selectbox('Select app', APPS)
-    st.write('해당 프로젝트 소스코드')
-    st.markdown('[Source Code](https://github.com/jaepil-choi/st_woori)')
-    st.write('제 깃허브 레포')
-    st.markdown('[![Repo](https://badgen.net/badge/icon/GitHub?icon=github&label)](https://github.com/jaepil-choi)')
 
     st.markdown(f'''
     ### 현재 POC가 완성된 항목들:
@@ -40,6 +44,18 @@ with st.sidebar:
     - {APPS[0]}
     - {APPS[2]}
     ''')
+
+    st.markdown('''
+    ### 웹페이지 단축 주소:
+    https://bit.ly/3OlfPO5
+    ''')
+
+    st.image(QR_CODE)
+
+    st.write('해당 프로젝트 소스코드')
+    st.markdown('[Source Code](https://github.com/jaepil-choi/st_woori)')
+    st.write('제 깃허브 레포')
+    st.markdown('[![Repo](https://badgen.net/badge/icon/GitHub?icon=github&label)](https://github.com/jaepil-choi)')
 
 today = datetime.date.today()
 today_int = utils.DateUtil.timestamp_2_intDate(today)
