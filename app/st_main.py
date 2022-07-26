@@ -227,7 +227,13 @@ if dropbox == APPS[2]:
     sidname_list = [sidname for sidname in sidname_list if sidname is not None]
     sidname_list = sorted(sidname_list)
 
-    selected = st.selectbox('보유한 종목을 고르세요', sidname_list)
+    # st.write(sidname_list.index('우리금융지주'))
+
+    selected = st.selectbox(
+        '보유한 종목을 고르세요', 
+        options=sidname_list, 
+        index=1439 # pre-selected option, 우리금융지주 index: 1439
+        )
     selected_sid = utils.name2sid(selected)
 
     st.subheader('내가 보유한 주식의 지난 1년간의 누적수익률')
