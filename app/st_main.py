@@ -214,6 +214,7 @@ if dropbox == APPS[2]:
 
     LOOKBACK_PERIOD = 252 # Trading days of 1 year / Fixed value for now. (As of 20220520)
     TOP_N = 10
+    CORR_THRESHOLD = 0.6
 
     # 지난 1년 (252일) 간 가격데이터가 모두 존재했던 종목만 남김
     # 즉, 1년 중 상폐 / 신규상장 되었던 기업들 모두 빠짐
@@ -244,12 +245,15 @@ if dropbox == APPS[2]:
     )
     st.plotly_chart(selected_fig)
 
+    selected_corr_values = return_corr_df.loc[:, selected_sid]
     selected_corr_rank = corr_rank_df.loc[:, selected_sid]
     top_N_sid_list = selected_corr_rank.sort_values().index[1:TOP_N+1]
     top_N_sidname_list = [utils.sid2name(sid) for sid in top_N_sid_list]
+    top_N_corr_list = selected_corr_values.sort_values(ascending=False)[1:TOP_N+1]
 
     st.subheader('보유 종목과 가장 유사한 종목들이에요')
-    top_N_df = pd.DataFrame(data=zip(top_N_sid_list, top_N_sidname_list), columns=['종목코드', '종목명'])
+    top_N_df = pd.DataFrame(data=zip(top_N_sid_list, top_N_sidname_list, top_N_corr_list), columns=['종목코드', '종목명', '상관계수'])
+    top_N_df = top_N_df[top_N_df['상관계수'] >= CORR_THRESHOLD]
     st.write(top_N_df)
 
     similar = st.selectbox('비교할 종목을 고르세요', top_N_sidname_list)
@@ -276,6 +280,13 @@ if dropbox == APPS[2]:
         legend_title='종목명(클릭가능)',
     )
     st.plotly_chart(similar_fig)
+
+    st.subheader('dev: 전 종목 상관계수의 분포')
+    corr_values = return_corr_df.to_numpy().flatten()
+    st.write(f'mean: {np.mean(corr_values)}')
+    st.write(f'std: {np.std(corr_values)}')
+    # corr_hist_fig = px.histogram(corr_values, nbins=50)
+    # st.plotly_chart(corr_hist_fig)
 
 if dropbox == APPS[3]:
     pass
