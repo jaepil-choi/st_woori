@@ -17,7 +17,7 @@ from conf import PathConfig
 
 plt.rc('font', family='Malgun Gothic')
 
-QR_CODE = Image.open(PathConfig.ASSETS_PATH / 'img' / 'site_QRcode.jpg')
+QR_CODE = Image.open(PathConfig.ASSETS_PATH / 'img' / 'qr.png')
 MYDATA_LOGO = Image.open(PathConfig.ASSETS_PATH / 'img' / 'mydatalogo.jpg')
 WOORI_LOGO = Image.open(PathConfig.ASSETS_PATH / 'img' / 'wooribanklogo.jpg')
 
