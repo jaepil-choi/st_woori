@@ -196,9 +196,19 @@ if dropbox == APPS[0]:
     )
     st.plotly_chart(pie_fig, )
 
+    ######### 섹터별 대표 회사 보기
 
-    # fig_after = px.pie(after_df, values='asset_value', names='asset_type')
-    # st.plotly_chart(fig_after, use_container_width=False)
+    st.markdown('''
+    <b style="font-size: 20px; color:DodgerBlue;">내 섹터의 대표 종목들을 살펴보세요</b>
+    ''', unsafe_allow_html=True)
+    sectors = myport_agg_df['sector'].tolist()
+    selected_sector = st.radio('섹터를 선택하세요', sectors)
+    filtered_df = SECTOR_DF[SECTOR_DF['sector'] == selected_sector].sort_values(by='marketCap', ascending=False)
+    filtered_df['rounded_mktcap'] = filtered_df['marketCap'] / 1e+8
+    filtered_df = filtered_df[['sid', 'name', 'rounded_mktcap']]
+    filtered_df.columns = ['종목코드', '종목명', '시가총액(억원)']
+
+    st.write(filtered_df.style.format(precision=0, thousands=','))
     
 
 if dropbox == APPS[1]:
