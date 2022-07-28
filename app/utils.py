@@ -13,6 +13,9 @@ with open(PathConfig.DATA_PATH / 'sid2name.pkl', 'rb') as p:
     SID2NAME = pickle.load(p)
 NAME2SID = {v:k for k, v in SID2NAME.items()}
 
+SECTOR_DF = pd.read_pickle(PathConfig.DATA_PATH / 'all_sector_df.pkl')
+SECTOR_DF = SECTOR_DF[['sid', 'name', 'sector', 'marketCap']]
+
 def get_fdr_last(df, col='Close'):
     assert col in ['Close', 'Open', 'High', 'Low', 'Change']
     
@@ -41,7 +44,6 @@ def name2sid(sidname, none_if_not_found=True):
             return None
         else:
             raise e
-    
 class DateUtil:
     @staticmethod
     def validate_date(yyyymmdd: Union[str, int], min_date=19900101, max_date=21000101) -> bool:

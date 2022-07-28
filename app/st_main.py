@@ -10,11 +10,10 @@ import numpy as np
 import datetime
 
 ## custom libs
+from utils import SID2NAME, NAME2SID, SECTOR_DF
 import st_utils, utils
 import conf
 from conf import PathConfig
-# import app.utils
-import utils
 
 plt.rc('font', family='Malgun Gothic')
 
@@ -28,6 +27,7 @@ st.title(':chart_with_upwards_trend: MyData 기획 POC 대시보드')
 st.markdown('---')
 
 APPS = [
+    '투자종합리포트 POC',
     '1. 환율 변동에 따른 내 원화자산/외화자산 가치변화',
     '2. 환율 변동에 따른 외화자산 직접투자 환차익/환손실 계산',
     '3. 주식 종목 간 상관관계에 기반한 유사종목 추천',
@@ -42,7 +42,8 @@ with st.sidebar:
     ### 현재 POC가 완성된 항목들:
 
     - {APPS[0]}
-    - {APPS[2]}
+    - {APPS[1]}
+    - {APPS[3]}
     ''')
 
     st.markdown('''
@@ -67,6 +68,119 @@ offset_day_str = utils.DateUtil.numdate2stddate(offset_day_int)
 
 if dropbox == APPS[0]:
     st.header(APPS[0])
+    stock_kind = st.radio('', ['국내주식', '해외주식']) # Does nothing
+
+    START = 20210514
+    END = 20220520
+
+    # 지난 1년 (252일) 간 가격데이터가 모두 존재했던 종목만 남김
+    # 즉, 1년 중 상폐 / 신규상장 되었던 기업들 모두 빠짐
+    return_df = pd.read_pickle(PathConfig.DATA_PATH / 'recent252_return_df.pkl')
+
+    sid_list = return_df.columns
+    sidname_list = [utils.sid2name(sid) for sid in sid_list]
+    sidname_list = [sidname for sidname in sidname_list if sidname is not None]
+    sidname_list = sorted(sidname_list)
+
+    # st.write(return_df)
+    # st.write(len(return_df.columns))
+    myportfolio = pd.DataFrame([
+        {
+            'sid': '005930', # 삼성전자005930
+            'name': SID2NAME['005930'],
+            'buy_price': utils.get_fdr_last(st_utils.get_fdr_data('005930', START-10, START)),
+            'now_price': utils.get_fdr_last(st_utils.get_fdr_data('005930', END-10, END)),
+            'volume': 10,
+        },
+        {
+            'sid': '000660', # SK하이닉스000660
+            'name': SID2NAME['000660'],
+            'buy_price': utils.get_fdr_last(st_utils.get_fdr_data('000660', START-10, START)),
+            'now_price': utils.get_fdr_last(st_utils.get_fdr_data('000660', END-10, END)),
+            'volume': 5,
+        },
+        {
+            'sid': '316140', # 우리금융지주316140
+            'name': SID2NAME['316140'],
+            'buy_price': utils.get_fdr_last(st_utils.get_fdr_data('316140', START-10, START)),
+            'now_price': utils.get_fdr_last(st_utils.get_fdr_data('316140', END-10, END)),
+            'volume': 100,
+        },
+        {
+            'sid': '105560', # KB금융105560
+            'name': SID2NAME['105560'],
+            'buy_price': utils.get_fdr_last(st_utils.get_fdr_data('105560', START-10, START)),
+            'now_price': utils.get_fdr_last(st_utils.get_fdr_data('105560', END-10, END)),
+            'volume': 3,
+        },
+        {
+            'sid': '017670', # SK텔레콤017670 
+            'name': SID2NAME['017670'],
+            'buy_price': utils.get_fdr_last(st_utils.get_fdr_data('017670', START-10, START)),
+            'now_price': utils.get_fdr_last(st_utils.get_fdr_data('017670', END-10, END)),
+            'volume': 3,
+        },
+    ])
+    myportfolio['dollarvolume'] = myportfolio['buy_price'] * myportfolio['volume']
+    st.write('내 포트폴리오')
+    st.write(myportfolio[['name', 'volume']])
+
+    dollarvolume = np.array(myportfolio['dollarvolume'])
+    weights = dollarvolume / np.sum(dollarvolume)
+    
+    ret_df = return_df[list(myportfolio['sid'])]
+    cumret_df = (ret_df + 1).cumprod() - 1
+    cumret_df = 100 * cumret_df
+
+    portfolio_cumret = cumret_df.iloc[:, 0] * weights[0]
+    for i, w in enumerate(weights[1:]):
+        portfolio_cumret += cumret_df.iloc[:, i+1] * w
+    portfolio_cumret.rename('포트폴리오', inplace=True)
+
+    kospi = st_utils.get_fdr_data('KS11', start=START, end=END)
+    kospi = kospi['Close']
+    kospi_return = kospi.pct_change()
+    kospi_cumret = (kospi_return + 1).cumprod() - 1
+    kospi_cumret = 100 * kospi_cumret
+    kospi_cumret.rename('KOSPI', inplace=True)
+
+    merged_df = pd.concat([portfolio_cumret, kospi_cumret], axis=1)
+    
+    selected_fig = px.line(merged_df)   
+    selected_fig.update_layout(
+        title=f'KOSPI vs 내 포트폴리오',
+        xaxis_title='날짜',
+        yaxis_title='누적수익률',
+        # legend_title='종목코드(클릭가능)',
+        width=400,
+    )
+    st.plotly_chart(selected_fig, use_container_width=False)
+
+    port_kospi_diff = portfolio_cumret.iloc[-1] - kospi_cumret.iloc[-1]
+    port_last_ret = portfolio_cumret.iloc[-1]
+    st.markdown(f'''
+    오늘 내 주식포트폴리오는 <b style="color:DeepPink;">{port_last_ret:.2f}%</b>올랐어요. 
+
+    <u style="color:Turquoise;">1년동안</u> 비교해보니 <u style="color:Turquoise;">KOSPI200</u>보다 
+    <b style="color:DeepPink;">{port_kospi_diff:.2f}%</b> 높은 수익률을 기록했어요.
+    ''', unsafe_allow_html=True) # 떨어질 땐 DeepSkyBlue
+
+    st.markdown("""---""")
+
+    st.markdown('''
+    연결한 모든 증권사의 주식을 모아 통합 포트폴리오를 만들었어요. 
+
+    <b style="font-size: 20px; color:DodgerBlue;">내 포트폴리오는 얼마나 잘 분산되어 있을까요?</b>
+    ''', unsafe_allow_html=True)
+
+    
+
+    # fig_after = px.pie(after_df, values='asset_value', names='asset_type')
+    # st.plotly_chart(fig_after, use_container_width=False)
+    
+
+if dropbox == APPS[1]:
+    st.header(APPS[1])
     st.info('''
     - 고객이 가진 (달러)외화자산의 가치가 원달러 환율 변동에 의해 얼마나 변하는지 보여줍니다.
     - 고객 전체 자산에서 원화자산 대비 외화자산이 많을 수록 환율변동에 자산가치가 크게 노출됩니다.
@@ -198,10 +312,10 @@ if dropbox == APPS[0]:
         fig_after = px.pie(after_df, values='asset_value', names='asset_type')
         st.plotly_chart(fig_after, use_container_width=False)
     
-if dropbox == APPS[1]:
-    pass
 if dropbox == APPS[2]:
-    st.header(APPS[2])
+    pass
+if dropbox == APPS[3]:
+    st.header(APPS[3])
     st.info('''
     - 고객이 가진 주식종목과 가장 유사한 수익률을 보였던 종목을 순서대로 보여줍니다. 
     - 그리고 고객이 본인 보유종목과 유사종목 간 누적수익률 차이를 쉽게 볼 수 있게 해줍니다.
@@ -294,8 +408,8 @@ if dropbox == APPS[2]:
     # corr_hist_fig = px.histogram(corr_values, nbins=50)
     # st.plotly_chart(corr_hist_fig)
 
-if dropbox == APPS[3]:
-    pass
+# if dropbox == APPS[4]:
+#     pass
 # if dropbox == APPS[4]:
 #     pass
 # if dropbox == APPS[5]:
