@@ -111,7 +111,7 @@ if dropbox == APPS[0]:
             'name': SID2NAME['105560'],
             'buy_price': utils.get_fdr_last(st_utils.get_fdr_data('105560', START-10, START)),
             'now_price': utils.get_fdr_last(st_utils.get_fdr_data('105560', END-10, END)),
-            'volume': 3,
+            'volume': 20,
         },
         {
             'sid': '017670', # SK텔레콤017670 
@@ -124,6 +124,8 @@ if dropbox == APPS[0]:
     myportfolio['dollarvolume'] = myportfolio['buy_price'] * myportfolio['volume']
     st.write('내 포트폴리오')
     st.write(myportfolio[['name', 'volume']])
+
+    ########### 벤치마크와 누적수익률 비교
 
     dollarvolume = np.array(myportfolio['dollarvolume'])
     weights = dollarvolume / np.sum(dollarvolume)
@@ -167,13 +169,30 @@ if dropbox == APPS[0]:
 
     st.markdown("""---""")
 
+    ########## 섹터 비중 확인
+
     st.markdown('''
     연결한 모든 증권사의 주식을 모아 통합 포트폴리오를 만들었어요. 
 
     <b style="font-size: 20px; color:DodgerBlue;">내 포트폴리오는 얼마나 잘 분산되어 있을까요?</b>
     ''', unsafe_allow_html=True)
 
+    st.warning('''
+    한 번 확인해보세요
+    - 너무 [전기전자], [금융업] 섹터에 편중되어 있어요.
+    ''')
+
+    myport_sector_df = myportfolio.merge(SECTOR_DF[['sid', 'sector', 'marketCap']], how='left', on='sid')
+    myport_agg_df = myport_sector_df.groupby('sector', as_index=False).sum()
     
+    st.write(myport_sector_df)
+    
+    pie_fig = px.pie(myport_agg_df, values='dollarvolume', names='sector')
+    pie_fig.update_layout(
+        title=f'섹터별 분산투자 현황',
+        width=400,
+    )
+    st.plotly_chart(pie_fig, )
 
     # fig_after = px.pie(after_df, values='asset_value', names='asset_type')
     # st.plotly_chart(fig_after, use_container_width=False)
