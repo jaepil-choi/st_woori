@@ -73,6 +73,8 @@ if dropbox == APPS[0]:
     START = 20210514
     END = 20220520
 
+    PIXEL_WIDTH = 380
+
     # 지난 1년 (252일) 간 가격데이터가 모두 존재했던 종목만 남김
     # 즉, 1년 중 상폐 / 신규상장 되었던 기업들 모두 빠짐
     return_df = pd.read_pickle(PathConfig.DATA_PATH / 'recent252_return_df.pkl')
@@ -154,7 +156,7 @@ if dropbox == APPS[0]:
         xaxis_title='날짜',
         yaxis_title='누적수익률',
         # legend_title='종목코드(클릭가능)',
-        width=400,
+        width=PIXEL_WIDTH,
     )
     st.plotly_chart(selected_fig, use_container_width=False)
 
@@ -190,9 +192,10 @@ if dropbox == APPS[0]:
     pie_fig = px.pie(myport_agg_df, values='dollarvolume', names='sector')
     pie_fig.update_layout(
         title=f'섹터별 분산투자 현황',
-        width=400,
+        width=PIXEL_WIDTH,
     )
     st.plotly_chart(pie_fig, )
+
 
     # fig_after = px.pie(after_df, values='asset_value', names='asset_type')
     # st.plotly_chart(fig_after, use_container_width=False)
