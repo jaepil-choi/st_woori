@@ -157,6 +157,12 @@ if dropbox == APPS[0]:
         yaxis_title='누적수익률',
         # legend_title='종목코드(클릭가능)',
         width=PIXEL_WIDTH,
+        legend=dict(
+            yanchor="top",
+            y=0.99,
+            xanchor="left",
+            x=0.01,
+            ),
     )
     st.plotly_chart(selected_fig, use_container_width=False)
 
@@ -187,7 +193,7 @@ if dropbox == APPS[0]:
     myport_sector_df = myportfolio.merge(SECTOR_DF[['sid', 'sector', 'marketCap']], how='left', on='sid')
     myport_agg_df = myport_sector_df.groupby('sector', as_index=False).sum()
     
-    st.write(myport_sector_df)
+    # st.write(myport_sector_df)
     
     pie_fig = px.pie(myport_agg_df, values='dollarvolume', names='sector')
     pie_fig.update_layout(
@@ -197,6 +203,7 @@ if dropbox == APPS[0]:
     st.plotly_chart(pie_fig, )
 
     ######### 섹터별 대표 회사 보기
+    SHOW_LINES = 10
 
     st.markdown('''
     <b style="font-size: 20px; color:DodgerBlue;">내 섹터의 대표 종목들을 살펴보세요</b>
@@ -204,6 +211,7 @@ if dropbox == APPS[0]:
     sectors = myport_agg_df['sector'].tolist()
     selected_sector = st.radio('섹터를 선택하세요', sectors)
     filtered_df = SECTOR_DF[SECTOR_DF['sector'] == selected_sector].sort_values(by='marketCap', ascending=False)
+    filtered_df = filtered_df.head(SHOW_LINES)
     filtered_df['rounded_mktcap'] = filtered_df['marketCap'] / 1e+8
     filtered_df = filtered_df[['sid', 'name', 'rounded_mktcap']]
     filtered_df.columns = ['종목코드', '종목명', '시가총액(억원)']
