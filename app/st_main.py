@@ -407,14 +407,19 @@ if dropbox == APPS[3]:
 
     selected_corr_values = return_corr_df.loc[:, selected_sid]
     selected_corr_rank = corr_rank_df.loc[:, selected_sid]
+
     top_N_sid_list = selected_corr_rank.sort_values().index[1:TOP_N+1]
     top_N_sidname_list = [utils.sid2name(sid) for sid in top_N_sid_list]
     top_N_corr_list = selected_corr_values.sort_values(ascending=False)[1:TOP_N+1]
+    
+    bottom_N_sid_list = selected_corr_rank.sort_values().index[-TOP_N:]
+    bottom_N_sidname_list = [utils.sid2name(sid) for sid in bottom_N_sid_list]
+    bottom_N_corr_list = selected_corr_values.sort_values(ascending=False)[-TOP_N:]
 
     st.subheader('보유 종목과 가장 유사한 종목들이에요')
     top_N_df = pd.DataFrame(data=zip(top_N_sid_list, top_N_sidname_list, top_N_corr_list), columns=['종목코드', '종목명', '상관계수'])
     # top_N_df = top_N_df[top_N_df['상관계수'] >= CORR_THRESHOLD]
-    bottom_N_df = top_N_df.sort_values(by='상관계수', ascending=True)[:TOP_N]
+    bottom_N_df = pd.DataFrame(data=zip(bottom_N_sid_list, bottom_N_sidname_list, bottom_N_corr_list), columns=['종목코드', '종목명', '상관계수'])
     st.write('가장 상관관계 큰 종목들')
     st.write(top_N_df)
     st.write('가장 상관관계 작은 종목들')
@@ -422,15 +427,23 @@ if dropbox == APPS[3]:
 
     similar = st.selectbox('비교할 종목을 고르세요', top_N_sidname_list)
     similar_sid = utils.name2sid(similar)
+    
+    dissimilar = st.selectbox('비교할 종목을 고르세요', bottom_N_sidname_list)
+    dissimilar_sid = utils.name2sid(dissimilar)
 
     similar_return_df = return_df.loc[:, similar_sid].copy()
     similar_cumret_df = (similar_return_df + 1).cumprod() - 1
     similar_cumret_df = similar_cumret_df * 100
     
+    dissimilar_return_df = return_df.loc[:, dissimilar_sid].copy()
+    dissimilar_cumret_df = (dissimilar_return_df + 1).cumprod() - 1
+    dissimilar_cumret_df = dissimilar_cumret_df * 100
+    
     concat_df = pd.concat(
         objs=[
             selected_cumret_df,
             similar_cumret_df,
+            dissimilar_cumret_df,
         ],
         axis=1,
     )
