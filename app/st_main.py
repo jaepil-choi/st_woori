@@ -413,8 +413,12 @@ if dropbox == APPS[3]:
 
     st.subheader('보유 종목과 가장 유사한 종목들이에요')
     top_N_df = pd.DataFrame(data=zip(top_N_sid_list, top_N_sidname_list, top_N_corr_list), columns=['종목코드', '종목명', '상관계수'])
-    top_N_df = top_N_df[top_N_df['상관계수'] >= CORR_THRESHOLD]
+    # top_N_df = top_N_df[top_N_df['상관계수'] >= CORR_THRESHOLD]
+    bottom_N_df = top_N_df.sort_values(by='상관계수', ascending=True)[:TOP_N]
+    st.write('가장 상관관계 큰 종목들')
     st.write(top_N_df)
+    st.write('가장 상관관계 작은 종목들')
+    st.write(bottom_N_df)
 
     similar = st.selectbox('비교할 종목을 고르세요', top_N_sidname_list)
     similar_sid = utils.name2sid(similar)
@@ -445,8 +449,8 @@ if dropbox == APPS[3]:
     corr_values = return_corr_df.to_numpy().flatten()
     st.write(f'mean: {np.mean(corr_values)}')
     st.write(f'std: {np.std(corr_values)}')
-    # corr_hist_fig = px.histogram(corr_values, nbins=50)
-    # st.plotly_chart(corr_hist_fig)
+    corr_hist_fig = px.histogram(corr_values, nbins=50)
+    st.plotly_chart(corr_hist_fig)
 
 # if dropbox == APPS[4]:
 #     pass
