@@ -361,17 +361,19 @@ if dropbox == APPS[2]:
     start_day_str = utils.DateUtil.numdate2stddate(start_day_int)
 
  
+    default_buy_date = datetime.date(2021, 12, 28)
+    default_sell_date = datetime.date(2022, 6, 17)
 
     buy_date = st.date_input(
         '매수일', 
-        value=start_day,
+        value=default_buy_date,
         min_value=start_day,
         max_value=today
         )
     buy_date = pd.to_datetime(buy_date)
     sell_date = st.date_input(
         '매도일', 
-        value=today,
+        value=default_sell_date,
         min_value=start_day,
         max_value=today
         )
