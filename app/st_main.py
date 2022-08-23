@@ -405,7 +405,32 @@ if dropbox == APPS[2]:
     fx_sell = fx_usdkrw.loc[sell_date]
     appl_buy = apple_price.loc[buy_date]
     appl_sell = apple_price.loc[sell_date]
-        
+
+    ## 환차익 환차손 계산
+    st.subheader('원화환산 수익률 (AS-IS)')
+
+    st.write('원화매수금액')
+    buy_won = appl_buy * fx_buy
+    buy_won
+    st.write('원화매도금액')
+    sell_won = appl_sell * fx_sell
+    sell_won
+    st.write('원화수익률')
+    return_won = ((sell_won - buy_won) / buy_won) * 100
+    f'{return_won} %'
+
+    st.subheader('환차 & 시세차익 분리 수익률 (TO-BE)')
+
+    st.write('환차익/환차손 (%)')
+    fx_return = ((fx_sell - fx_buy) / fx_buy) * 100
+    fx_return
+    
+    st.write('주식 시세차익 (%)')    
+    stock_return = ((appl_sell - appl_buy) / appl_buy) * 100
+    stock_return
+
+    return_all = (1+fx_return/100) * (1+stock_return/100) - 1
+    f'{return_all} %'
 
 
 if dropbox == APPS[3]:
