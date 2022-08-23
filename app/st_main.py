@@ -392,14 +392,14 @@ if dropbox == APPS[2]:
     fx_fig = px.line(fx_usdkrw)
     fx_fig.update_layout(yaxis_range=[1100, 1400])
     fx_fig.add_vline(x=buy_date, line_color='yellow')
-    fx_fig.add_vline(x=sell_date, line_color='pink')
+    fx_fig.add_vline(x=sell_date, line_color='cyan')
     st.plotly_chart(fx_fig)
 
     appl_fig = px.line(apple_price)
     appl_fig.update_layout(yaxis_range=[100, 200])
     appl_fig.update_traces(line_color='red')
     appl_fig.add_vline(x=buy_date, line_color='yellow')
-    appl_fig.add_vline(x=sell_date, line_color='pink')
+    appl_fig.add_vline(x=sell_date, line_color='cyan')
     st.plotly_chart(appl_fig) # TODO: secondary y axes 넣어보기 둘이 겹치게.
 
     ## 매수/매도 시점의 가격들
@@ -413,28 +413,28 @@ if dropbox == APPS[2]:
 
     st.write('원화매수금액')
     buy_won = appl_buy * fx_buy
-    buy_won
+    round(buy_won, 2)
     st.write('원화매도금액')
     sell_won = appl_sell * fx_sell
-    sell_won
+    round(sell_won, 2)
     st.write('원화수익률')
     return_won = ((sell_won - buy_won) / buy_won) * 100
-    f'{return_won} %'
+    f'{round(return_won, 2)} %'
 
     st.subheader('환차 & 시세차익 분리 수익률 (TO-BE)')
 
     st.write('환차익/환차손 (%)')
     fx_return = ((fx_sell - fx_buy) / fx_buy)
-    fx_return * 100
+    round(fx_return * 100, 2)
     f'환율로 벌거나 잃은 돈은 {(fx_buy * appl_buy) * fx_return} 원 이에요.'
     
     st.write('주식 시세차익 (%)')    
     stock_return = ((appl_sell - appl_buy) / appl_buy)
-    stock_return * 100
+    round(stock_return * 100, 2)
     f'순수하게 주식 시세 차이로 벌거나 잃은 돈은 {(fx_sell * appl_sell) * stock_return} 원 이에요.'
 
     return_all = (1+fx_return) * (1+stock_return) - 1
-    f'{return_all * 100}%'
+    f'{round(return_all * 100)}%'
 
 
 if dropbox == APPS[3]:
