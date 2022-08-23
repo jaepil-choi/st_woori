@@ -368,19 +368,21 @@ if dropbox == APPS[2]:
         min_value=start_day,
         max_value=today
         )
+    buy_date = pd.to_datetime(buy_date)
     sell_date = st.date_input(
         '매도일', 
         value=today,
         min_value=start_day,
         max_value=today
         )
+    sell_date = pd.to_datetime(sell_date)
     
     
     fx_usdkrw = st_utils.get_fdr_data('USD/KRW', start=start_day_str, end=today_str)
-    fx_usdkrw = fx_usdkrw['Close'].copy().to_frame()
+    fx_usdkrw = fx_usdkrw['Close'].copy()
     fx_usdkrw.columns = ['FX_USDKRW']
     apple_price = st_utils.get_fdr_data('AAPL', start=start_day_str, end=today_str)
-    apple_price = apple_price['Close'].copy().to_frame()
+    apple_price = apple_price['Close'].copy()
     apple_price.columns = ['APPL']
 
     fx_usdkrw
@@ -396,7 +398,14 @@ if dropbox == APPS[2]:
     appl_fig.update_traces(line_color='red')
     appl_fig.add_vline(x=buy_date, line_color='yellow')
     appl_fig.add_vline(x=sell_date, line_color='pink')
-    st.plotly_chart(appl_fig) # TODO: secondary y axes 넣어보기 둘이 겹치게.    
+    st.plotly_chart(appl_fig) # TODO: secondary y axes 넣어보기 둘이 겹치게.
+
+    ## 매수/매도 시점의 가격들
+    fx_buy = fx_usdkrw.loc[buy_date]
+    fx_sell = fx_usdkrw.loc[sell_date]
+    appl_buy = apple_price.loc[buy_date]
+    appl_sell = apple_price.loc[sell_date]
+        
 
 
 if dropbox == APPS[3]:
