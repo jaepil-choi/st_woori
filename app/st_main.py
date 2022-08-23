@@ -422,15 +422,17 @@ if dropbox == APPS[2]:
     st.subheader('환차 & 시세차익 분리 수익률 (TO-BE)')
 
     st.write('환차익/환차손 (%)')
-    fx_return = ((fx_sell - fx_buy) / fx_buy) * 100
-    fx_return
+    fx_return = ((fx_sell - fx_buy) / fx_buy)
+    fx_return * 100
+    f'환율로 벌거나 잃은 돈은 {(fx_buy * appl_buy) * fx_return} 원 이에요.'
     
     st.write('주식 시세차익 (%)')    
-    stock_return = ((appl_sell - appl_buy) / appl_buy) * 100
-    stock_return
+    stock_return = ((appl_sell - appl_buy) / appl_buy)
+    stock_return * 100
+    f'순수하게 주식 시세 차이로 벌거나 잃은 돈은 {(fx_sell * appl_sell) * stock_return} 원 이에요.'
 
-    return_all = (1+fx_return/100) * (1+stock_return/100) - 1
-    f'{return_all} %'
+    return_all = (1+fx_return) * (1+stock_return) - 1
+    f'{return_all * 100}%'
 
 
 if dropbox == APPS[3]:
