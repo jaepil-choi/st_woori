@@ -373,7 +373,13 @@ if dropbox == APPS[3]:
     # 지난 1년 (252일) 간 가격데이터가 모두 존재했던 종목만 남김
     # 즉, 1년 중 상폐 / 신규상장 되었던 기업들 모두 빠짐
     return_df = pd.read_pickle(PathConfig.DATA_PATH / 'recent252_return_df.pkl')
+    original_cols = return_df.columns
+    valid_cols = [sid for sid in original_cols if utils.sid2name(sid) is not None]
+    return_df = return_df.loc[:, valid_cols]
+
     return_corr_df = pd.read_pickle(PathConfig.DATA_PATH / 'return_corr_df.pkl')
+    return_corr_df = return_corr_df.loc[valid_cols, valid_cols]
+
     corr_rank_df = return_corr_df.rank(ascending=False)
     
     sid_list = return_corr_df.columns
