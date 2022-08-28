@@ -387,8 +387,6 @@ if dropbox == APPS[2]:
     apple_price = apple_price['Close'].copy()
     apple_price.columns = ['APPL']
 
-    fx_usdkrw
-
     fx_fig = px.line(fx_usdkrw)
     fx_fig.update_layout(yaxis_range=[1100, 1400])
     fx_fig.add_vline(x=buy_date, line_color='yellow')
@@ -425,16 +423,25 @@ if dropbox == APPS[2]:
 
     st.write('환차익/환차손 (%)')
     fx_return = ((fx_sell - fx_buy) / fx_buy)
-    round(fx_return * 100, 2)
-    f'환율로 벌거나 잃은 돈은 {(fx_buy * appl_buy) * fx_return} 원 이에요.'
+    f'{round(fx_return * 100, 2)} %'
+    f'환율로 벌거나 잃은 돈은 {round((fx_buy * appl_buy) * fx_return, 2)} 원 이에요.'
     
     st.write('주식 시세차익 (%)')    
     stock_return = ((appl_sell - appl_buy) / appl_buy)
-    round(stock_return * 100, 2)
-    f'순수하게 주식 시세 차이로 벌거나 잃은 돈은 {(fx_sell * appl_sell) * stock_return} 원 이에요.'
+    f'{round(stock_return * 100, 2)} %'
+    f'순수하게 주식 시세 차이로 벌거나 잃은 돈은 {round((fx_sell * appl_sell) * stock_return, 2)} 원 이에요.'
 
     return_all = (1+fx_return) * (1+stock_return) - 1
-    f'{round(return_all * 100)}%'
+    f'{round(return_all * 100, 2)}%'
+
+    today_fx = fx_usdkrw.iloc[-1]
+    min_fx = min(fx_usdkrw)
+    max_fx = max(fx_usdkrw)
+    sim_fx = st.slider('환율이 이렇게 변한다면?', min_fx, max_fx, float(today_fx))
+
+    
+
+
 
 
 if dropbox == APPS[3]:
