@@ -435,13 +435,12 @@ if dropbox == APPS[2]:
     f'{round(return_all * 100, 2)}%'
 
     today_fx = fx_usdkrw.iloc[-1]
-    min_fx = min(fx_usdkrw)
-    max_fx = max(fx_usdkrw)
+    fx_range_offset = 100
+    min_fx = min(fx_usdkrw) - fx_range_offset 
+    max_fx = max(fx_usdkrw) + fx_range_offset
     sim_fx = st.slider('환율이 이렇게 변한다면?', min_fx, max_fx, float(today_fx))
 
     
-
-
 
 
 if dropbox == APPS[3]:
